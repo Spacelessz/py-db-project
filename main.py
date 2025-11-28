@@ -2,7 +2,7 @@ import psycopg2
 import tkinter as tk
 from tkinter import ttk, messagebox
 
-# ---------------------------- ПОДКЛЮЧЕНИЕ К БАЗЕ ----------------------------
+#ПОДКЛЮЧЕНИЕ К БАЗЕ 
 
 def get_connection():
     return psycopg2.connect(
@@ -13,7 +13,7 @@ def get_connection():
         port="5432"
     )
 
-# ---------------------------- УТИЛИТЫ ДЛЯ КАТЕГОРИЙ ----------------------------
+#УТИЛИТЫ ДЛЯ КАТЕГОРИЙ 
 
 def get_categories():
     """Возвращает список кортежей (id, name) всех категорий"""
@@ -36,7 +36,7 @@ def refresh_categories():
     except NameError:
         pass
 
-# ---------------------------- ФУНКЦИИ ДЛЯ БД ----------------------------
+# ФУНКЦИИ ДЛЯ БД
 
 def load_materials():
     conn = get_connection()
@@ -149,7 +149,7 @@ def load_transactions():
     conn.close()
     return rows
 
-# ---------------------------- GUI (TKINTER) ----------------------------
+#GUI (TKINTER) 
 
 def refresh_table():
     for row in tree.get_children():
@@ -204,7 +204,6 @@ def add_material_window():
     entries.append(e_min)
 
     tk.Label(win, text=labels[4]).pack(anchor='w', padx=10, pady=(8,0))
-    # Combobox с именами категорий
     global combobox_category
     combobox_category = ttk.Combobox(win, values=category_names, state="readonly")
     combobox_category.pack(fill='x', padx=10)
@@ -294,9 +293,7 @@ def delete_material(selected_id):
     conn = get_connection()
     cur = conn.cursor()
     try:
-        # Сначала удаляем транзакции, чтобы не нарушить foreign key
         cur.execute("DELETE FROM transactions WHERE material_id = %s", (selected_id,))
-        # Потом удаляем сам материал
         cur.execute("DELETE FROM materials WHERE id = %s", (selected_id,))
         conn.commit()
         messagebox.showinfo("Успех", f"Материал с ID {selected_id} удалён")
@@ -379,7 +376,7 @@ def delete_category_window():
 
     tk.Button(win, text="Удалить", command=delete_selected).pack(pady=10)
 
-# ---------------------------- ИНИЦИАЛИЗАЦИЯ И ОКНО ----------------------------
+#ИНИЦИАЛИЗАЦИЯ И ОКНО
 
 # загружаем категории в память
 categories_list = []
@@ -417,3 +414,4 @@ tk.Button(frame, text="Удалить материал", command=delete_material
 tk.Button(frame, text="Удалить категорию", command=delete_category_window).grid(row=0, column=7, padx=5)
 
 root.mainloop()
+
